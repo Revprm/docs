@@ -66,7 +66,14 @@
           {
             "group": "BTLO Challenges",
             "icon": "puzzle",
-            "pages": [],
+            "pages": [
+              "writeups/btlo/incident-response",
+              "writeups/btlo/digital-forensics",
+              "writeups/btlo/security-operations",
+              "writeups/btlo/ctf-like",
+              "writeups/btlo/reverse-engineering",
+              "writeups/btlo/threat-intelligence"
+            ],
             "root": "btlo-challenges"
           }
         ],
