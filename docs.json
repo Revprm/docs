@@ -62,7 +62,14 @@
               "writeups/htb-machines/windows-machine"
             ]
           },
-          "writeups/htb-challenges"
+          "writeups/htb-challenges",
+          {
+            "group": "BTLO Challenges",
+            "icon": "puzzle",
+            "pages": [
+              "btlo-challenges"
+            ]
+          }
         ],
         "icon": "notes"
       },
