@@ -67,7 +67,7 @@
             "group": "BTLO Challenges",
             "icon": "puzzle",
             "pages": [
-              "btlo-challenges"
+              "writeups/btlo-challenges"
             ]
           }
         ],
