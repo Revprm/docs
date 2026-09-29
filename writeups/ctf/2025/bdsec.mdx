@@ -1,0 +1,74 @@
+---
+title: "BDSEC"
+sidebarTitle: "BDSEC"
+description: "Achieved Rank 3 With HCS"
+---
+
+| Name | Category | Solved? |
+| --- | --- | --- |
+| Poisoned Ledger Hex | Forensics | ✅ |
+| Router | Networking | ✅ |
+
+---
+
+## Poisoned Ledger Hex
+
+### TL;DR
+
+Extract the three fragmented `OP_RETURN` payloads from blocks 101, 108, and 117, concatenate them in block‐order, XOR each byte with `0x42` (ASCII “B”), and you get the flag.
+
+### Solution
+
+1. Locate the `OP_RETURN` fragments
+
+Inspecting each block’s transactions, you find three blocks carrying non‐standard data fields:
+
+- **Block 101**: `OP_RETURN` → `[0, 6, 17, 7, 1, 57, 0, 14, 114, 1]`
+- **Block 108**: `OP_RETURN` → `[9, 29, 1, 10, 3, 11, 44, 29, 6, 55]`
+- **Block 117**: `OP_RETURN` → `[47, 18, 29, 115, 119, 29, 4, 55, 44, 44, 27, 63]`
+
+2. **Reassemble the data**\\ Concatenate the three arrays **in ascending block order** to get a single byte stream:
+
+```python
+data = [
+  0,6,17,7,1,57,0,14,114,1,
+  9,29,1,10,3,11,44,29,6,55,
+  47,18,29,115,119,29,4,55,44,44,27,63
+]
+```
+
+3. **Decode with XOR**\\ The hint (“Poisoned Ledger”) suggests a simple XOR cipher. Using `B` as the key:
+
+```python
+xor_key = ord('B')  # 0x42
+decoded = ''.join(chr(b ^ xor_key) for b in data)
+print(decoded)
+```
+
+### Flag
+
+`BDSEC\{BL0CK_CHAIn_DumP_15_FunnY\}`
+
+---
+
+## Router
+
+### TL;DR
+
+We need to find a company from the router that is being used from the given pcap file
+
+### Solution
+
+We just need to check each of the mac address that is captured from the pcap file and search it on google
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2Fuahjeyx6pLck9SCm1dbg%2Fimage.png?alt=media&token=b3819a1e-f508-4dc8-b5cc-e444e5dea543)
+</Frame>
+
+`Ethernet II, Src: NetisTechnol_47:fa:42 (64:ee:b7:47:fa:42), Dst: LiteonTechno_7e:74:6b (9c:2f:9d:7e:74:6b)`
+
+from this [website](https://www.netis-systems.com/), we know the answer is `netis`
+
+### Flag
+
+`BDSEC\{netis\}`

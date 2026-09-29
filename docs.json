@@ -1,0 +1,120 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "aspen",
+  "name": "Kima",
+  "colors": {
+    "primary": "#2563EB",
+    "light": "#60A5FA",
+    "dark": "#1D4ED8"
+  },
+  "favicon": {
+    "light": "/images/favicon.ico",
+    "dark": "/images/favicon.ico"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Home",
+        "pages": [
+          "index"
+        ],
+        "icon": "home"
+      },
+      {
+        "group": "Writeups",
+        "pages": [
+          {
+            "group": "CTF",
+            "icon": "flag",
+            "root": "writeups/ctf",
+            "pages": [
+              {
+                "group": "2024",
+                "root": "writeups/ctf/2024",
+                "pages": [
+                  "writeups/ctf/2024/cybergon-ctf",
+                  "writeups/ctf/2024/ekoparty-ctf",
+                  "writeups/ctf/2024/world-wide-ctf",
+                  "writeups/ctf/2024/wargamesmy-ctf"
+                ]
+              },
+              {
+                "group": "2025",
+                "root": "writeups/ctf/2025",
+                "pages": [
+                  "writeups/ctf/2025/lactf",
+                  "writeups/ctf/2025/acectf",
+                  "writeups/ctf/2025/nowruz-1404",
+                  "writeups/ctf/2025/break-the-syntax",
+                  "writeups/ctf/2025/bdsec",
+                  "writeups/ctf/2025/blackhat-usa-bugcrowd",
+                  "writeups/ctf/2025/holmes-ctf"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "HTB Machines",
+            "icon": "server",
+            "root": "writeups/htb-machines",
+            "pages": [
+              "writeups/htb-machines/linux-machines",
+              "writeups/htb-machines/windows-machine"
+            ]
+          },
+          "writeups/htb-challenges"
+        ],
+        "icon": "notes"
+      },
+      {
+        "group": "Blogs",
+        "pages": [
+          "blogs/linux"
+        ],
+        "icon": "pen"
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "href": "https://github.com/Revprm",
+        "label": "GitHub"
+      },
+      {
+        "href": "https://www.linkedin.com/in/revyprm/",
+        "label": "LinkedIn"
+      }
+    ]
+  },
+  "contextual": {
+    "options": [
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity"
+    ]
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/Revprm",
+      "linkedin": "https://www.linkedin.com/in/revyprm"
+    }
+  },
+  "fonts": {
+    "family": "Space Grotesk"
+  },
+  "thumbnails": {
+    "background": "/images/cat-vibin.png",
+    "fonts": {
+      "family": "Poppins"
+    }
+  },
+  "metadata": {
+    "timestamp": true
+  },
+  "styling": {
+    "eyebrows": "section"
+  }
+}

@@ -1,0 +1,147 @@
+---
+title: "Holmes CTF"
+sidebarTitle: "Holmes CTF"
+description: "Achieved Rank 2 with HCS 🥈"
+---
+
+## The Card
+
+Holmes receives a breadcrumb from Dr. Nicole Vale - fragments from a string of cyber incidents across Cogwork-1. Each lead ends the same way: a digital calling card signed JM.
+
+We're given a couple log files with a docker. The logs are access.log, application.log and waf.log. We need to analyze the log files in order to get the answer for each question.
+
+---
+
+### 1. Analyze the provided logs and identify what is the first User-Agent used by the attacker against Nicole Vale's honeypot. (string)
+
+We can get the answer by checking the couple first lines of access.log.
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FJPkNrWooFy21yUqZoOJ0%2Fimage.png?alt=media&token=85f84f91-4b0f-4190-9d39-3c9a33a662da)
+</Frame>
+
+Based on the log files, we know that the User-Agent that is used by the attacker is `Lilnunc/4A4D - SpecterEye`
+
+---
+
+### 2. It appears the threat actor deployed a web shell after bypassing the WAF. What is the file name? (filename.ext)
+
+Based on the question, we can reduce our scope to analyzing only the WAF logs (since the question mentioned `bypassing the WAF`).
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FmdUmv3ZRehssOns8vVTn%2Fimage.png?alt=media&token=4a31dc73-fa72-4fd5-8938-a43c5a69123e)
+</Frame>
+
+From the details of the log file, we can see that there's a rule named `WEBSHELL_EXECUTION` and the Action is `BYPASS` from that message we can check the filename which is `temp_4A4D.php`
+
+---
+
+### 3. The threat actor also managed to exfiltrate some data. What is the name of the database that was exfiltrated? (filename.ext)
+
+We can find the name of the database near the `WEBSHELL_EXECUTION` rule. The rule name is `DATABASE_DOWNLOAD` and the filename is `database_dump_4A4D.sql`
+
+---
+
+### 4. During the attack, a seemingly meaningless string seems to be recurring. Which one is it? (string)
+
+From the previous questions, we always find `4A4D` string and I suspect that `4A4D` is the answer and it's correct.
+
+---
+
+### 5. OmniYard-3 (formerly Scotland Yard) has granted you access to its CTI platform. Browse to the first IP:port address and count how many campaigns appear to be linked to the honeypot attack.
+
+To solve this, we can check each campaign whether it mentions `4A4D` or not. The campaigns are
+
+- Transport Chaos
+- Operation Neural Storm
+- Civic Disruption
+- Bio-Breach
+- Quantum Heist
+
+and the answer is `5` campaigns
+
+---
+
+### 6. How many tools and malware in total are linked to the previously identified campaigns? (number)
+
+To answer this question, we can just count the total number of malware and tools that are linked to each campaigns
+
+- Transport Chaos (1 Malware)
+- Operation Neural Storm (1 Tool and 1 Malware)
+- Civic Disruption (1 Tool and 1 Malware)
+- Bio-Breach (1 Tool and 1 Malware)
+- Quantum Heist (1 Tool and 1 Malware)
+
+and the answer is `9`
+
+---
+
+### 7. It appears that the threat actor has always used the same malware in their campaigns. What is its SHA-256 hash? (sha-256 hash)
+
+To solve this, we can check each indicator that is linked directly to the malware and find the hash that is used multiple times.
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FiUVNz7e7I4HiLTvJYgPG%2Fimage.png?alt=media&token=e75735f8-b8c1-4afc-8e91-01c8dcf2e6ba)
+</Frame>
+
+The answer is `7477c4f5e6d7c8b9a0f1e2d3c4b5a6f7e8d9c0b1a2f3e4d5c6b7a8f9e0d17477`
+
+---
+
+### 8. Browse to the second IP:port address and use the CogWork Security Platform to look for the hash and locate the IP address to which the malware connects. (Credentials: nvale/CogworkBurning!)
+
+To solve this question, we can search the hash using the platform on the second docker ip:port address and find the IP address
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2F5MhmV2yYoRReDyRnPRCw%2Fimage.png?alt=media&token=729426b8-645e-4556-af2b-50d84b2c7126)
+</Frame>
+
+The answer is `74.77.74.77`
+
+---
+
+### 9. What is the full path of the file that the malware created to ensure its persistence on systems? (/path/filename.ext)
+
+To find the file, we can view the details using the same platform from question number 8 and find the path.
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FKxTE5NP7NTwMKZT6t7Fb%2Fimage.png?alt=media&token=ed044e1d-b1db-4b8e-be30-9d5c8a22c8e3)
+</Frame>
+
+The answer is `/opt/lilnunc/implant/4a4d_persistence.sh`
+
+---
+
+### 10. Finally, browse to the third IP:port address and use the CogNet Scanner Platform to discover additional details about the TA's infrastructure. How many open ports does the server have?
+
+To solve this, we can use the third ip:port from the docker and search the `74.77.74.77` on the platform.
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FZJmDoNj6xMBVwIE0SpLn%2Fimage.png?alt=media&token=8a15a6fc-af97-40b6-a097-9861693a0fea)
+</Frame>
+
+Based on the search, the number of open ports are `11`
+
+---
+
+### 11. Which organization does the previously identified IP belong to? (string)
+
+To solve this question, we can click the `details` button and find the name of the organization
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2Fq9WLZ4T1TWmMxTdKCrKd%2Fimage.png?alt=media&token=f510cc54-fa4c-493b-9948-72103c31cb74)
+</Frame>
+
+The answer is `SenseShield MSP`
+
+---
+
+### 12. One of the exposed services displays a banner containing a cryptic message. What is it? (string)
+
+To solve this question, we can check the `Services` tab and find the unique banner
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FVwowOCYEpUHdLJ67lNJP%2Fimage.png?alt=media&token=eb109021-48d7-4bec-8732-69b4131a43e0)
+</Frame>
+
+The answer is `He's a ghost I carry, not to haunt me, but to hold me together - NULLINC REVENGE`

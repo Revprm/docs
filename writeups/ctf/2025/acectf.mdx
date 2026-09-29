@@ -1,0 +1,209 @@
+---
+title: "AceCTF"
+sidebarTitle: "AceCTF"
+description: "Achieved Rank 2 🥈"
+---
+
+| Name | Category | Solved? |
+| :-: | :-: | :-: |
+| **Tabs&Spaces** | Steganography | ✅ |
+| **Cryptic Pixels** | Steganography | ✅ |
+| **Whispering Waves** | Steganography | ✅ |
+| **The Mysterious Building** | OSINT | ✅ |
+
+---
+
+## Steganography
+
+### Tabs&Spaces
+
+> A mysterious ZIP file containing a collection of images and a file has been discovered. The task is to retrieve the flag.
+
+We're given a `zip` file that contains a random python file and a `ctf`  folder that contains a lot of `jpg` file.
+
+> Noticed that the name of the files have spaces before the number
+
+I decided to rename the files so the name of the file can appear when I use the command `ls` 
+
+since it's related to steganography, I decided to check all the metadatas of the images and noticed that there's a lot of png files that are using `jpg` extension but only one true `jpg` file, that is `87.jpg` 
+
+let's try to find something using stegseek to 87.jpg
+
+<Frame caption="whitespace_flag.txt">
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FEulG8NhP3f7eZk24UF0e%2Fimage.png?alt=media&token=607f3517-46d6-4dc1-8fe8-ee8e63fe9f86)
+</Frame>
+
+After checking it out, apparently we can't use stegsnow to solve it, but let's try decoding it to binary where `\t` is 1 and `' '` is 0
+
+command: `cat whitespace_flag.txt | tr ' ' '0' | tr '\t' '1'`
+
+```text title="Output"
+01000001
+01000011
+01000101
+01000011
+01010100
+01000110
+01111011
+01101110
+00110000
+01011111
+00110011
+01111000
+01110000
+00110001
+00110000
+00110001
+00110111
+01011111
+01101110
+00110000
+01011111
+01100111
+00110100
+00110001
+01101110
+01111101
+```
+
+Put it into [cyberchef ](https://gchq.github.io/CyberChef/#recipe=From_Binary\('CRLF',8\)&input=MDEwMDAwMDENCjAxMDAwMDExDQowMTAwMDEwMQ0KMDEwMDAwMTENCjAxMDEwMTAwDQowMTAwMDExMA0KMDExMTEwMTENCjAxMTAxMTEwDQowMDExMDAwMA0KMDEwMTExMTENCjAwMTEwMDExDQowMTExMTAwMA0KMDExMTAwMDANCjAwMTEwMDAxDQowMDExMDAwMA0KMDAxMTAwMDENCjAwMTEwMTExDQowMTAxMTExMQ0KMDExMDExMTANCjAwMTEwMDAwDQowMTAxMTExMQ0KMDExMDAxMTENCjAwMTEwMTAwDQowMDExMDAwMQ0KMDExMDExMTANCjAxMTExMTAx&oenc=65001&ieol=CRLF&oeol=CRLF)and we got the flag
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FCTxPquLPcozp8KjAvQSe%2Fimage.png?alt=media&token=b24d2266-5523-45b8-b7b6-c7432b6ef215)
+</Frame>
+
+Flag: `ACECTF{n0_3xp1017_n0_g41n}` 
+
+---
+
+### Cryptic Pixels
+
+> This image looks normal at first, but something important is hidden inside. The secret is carefully concealed, making it hard to find.
+>
+> Your task is to explore the image, uncover the hidden message, and reveal what's concealed. Do you have what it takes to crack the code and unlock the secret?
+>
+> Submit your answer in the following format: ACECTF\{3x4mpl3\\\_fl4g\}
+
+We're given a zip file containing an `png` image. Based on the description, there's a couple methods we can use.
+
+The methods are using:
+
+- Stegseek/Steghide
+- Foremost/Binwalk
+
+Since we didn't get anything from using stegseek/steghide, let's try using binwalk instead
+
+Command: `binwalk CrypticPixels.png` 
+
+```text title="Output"
+DECIMAL       HEXADECIMAL     DESCRIPTION
+--------------------------------------------------------------------------------
+0             0x0             PNG image, 1600 x 1080, 8-bit/color RGBA, non-interlaced
+91            0x5B            Zlib compressed data, compressed
+
+WARNING: Extractor.execute failed to run external extractor 'jar xvf '%e'': [Errno 2] No such file or directory: 'jar', 'jar xvf '%e'' might not be installed correctly
+753923        0xB8103         Zip archive data, encrypted at least v1.0 to extract, compressed size: 38, uncompressed size: 26, name: flag.txt
+754121        0xB81C9         End of Zip archive, footer length: 22
+```
+
+To extract a flag from a password-protected zip file, use `zip2john` to create a hash of the file, then use `john` to crack
+
+```text title="John Command"
+zip2john B8103.zip > hash.txt
+john hash.txt
+```
+
+```text title="Output"
+Using default input encoding: UTF-8
+Loaded 1 password hash (PKZIP [32/64])
+Will run 8 OpenMP threads
+Press 'q' or Ctrl-C to abort, almost any other key for status
+qwertyuiop       (B8103.zip/flag.txt)     
+1g 0:00:00:00 DONE (2025-02-28 08:01) 33.33g/s 4369Kp/s 4369Kc/s 4369KC/s 123456..kovacs
+Use the "--show" option to display all of the cracked passwords reliably
+Session completed.
+```
+
+flag.txt
+
+```text
+JLNLCO{q4q4_h0d'a3_5v4a7}
+```
+
+There are two possibilities: the flag is encoded using either ROT13 or ROT47. Let's use [CyberChef's ](https://gchq.github.io/CyberChef/#recipe=ROT13_Brute_Force\(true,true,false,100,0,true,''\)&input=SkxOTENPe3E0cTRfaDBkJ2EzXzV2NGE3fQ&oenc=65001&ieol=CRLF)ROT13 Brute Force tool to identify the
+
+<Frame caption="ROT13 Bruteforce">
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FNRtklcd32mu8YPsoTMsb%2Fimage.png?alt=media&token=bead83bb-8257-4e92-9875-ea2fefec2440)
+</Frame>
+
+and we get the flag at `Amount = 17`
+
+Flag: `ACECTF{h4h4_y0u'r3_5m4r7}` 
+
+---
+
+### Whispering Waves
+
+> Alex, a passionate linguist and culture enthusiast, frequently visits the website Francophonie.org to learn about the French-speaking world. Alex is known for their love of cryptography and steganography, often hiding messages in unsuspecting places.
+
+We're given a set of wordlist and zip file that is protected with a password. I suspect that the zip file can be cracked using the wordlist given by the challenge, and yes it can. the password is `Vierges` 
+
+The zip contains a wav file. If we analyzed it using Sonic Visualizer and enable spectogram layer.
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FQTHHYaUJdNvgncD5xlqZ%2Fimage.png?alt=media&token=bfd14922-c39d-46d1-a675-2a281433cf59)
+</Frame>
+
+bottom means 0 and top means 1, collect all the data and if it is decoded using binary then we will get the flag
+
+Flag: `ACECTF{53cur1n6w3b}` 
+
+---
+
+## OSINT
+
+### The Mysterious Building
+
+We're given an image where it looks like some kind of building with a tower near it. we assume that it's in India after checking the metadata of the image using exiftool.
+
+```text title="Exiftool Output"
+ExifTool Version Number         : 12.57
+File Name                       : OSINT-1.jpg
+Directory                       : .
+File Size                       : 255 kB
+File Modification Date/Time     : 2025:02:27 19:05:17+07:00
+File Access Date/Time           : 2025:02:27 19:17:39+07:00
+File Inode Change Date/Time     : 2025:02:27 19:05:17+07:00
+File Permissions                : -rwxrwxrwx
+File Type                       : JPEG
+File Type Extension             : jpg
+MIME Type                       : image/jpeg
+JFIF Version                    : 1.01
+Resolution Unit                 : inches
+X Resolution                    : 96
+Y Resolution                    : 96
+XMP Toolkit                     : Image::ExifTool 13.10
+Description                     : National Capital of India
+Author                          : Описание соответствует действительности
+Comment                         : Определенно не Россия
+Image Width                     : 734
+Image Height                    : 858
+Encoding Process                : Baseline DCT, Huffman coding
+Bits Per Sample                 : 8
+Color Components                : 3
+Y Cb Cr Sub Sampling            : YCbCr4:2:0 (2 2)
+Image Size                      : 734x858
+Megapixels                      : 0.630
+```
+
+My team member said that it's the `Pitampura TV Tower`.  After checking it using google maps, it's right and the building should be near that tower.
+
+By using the logo on the building, we found the exact building
+
+<Frame caption="PP Trade Centre">
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FfRNjd4OlZ5u4AzzwJn1Y%2Fimage.png?alt=media&token=84db17c6-5257-4711-b831-e3a6061c9f3a)
+</Frame>
+
+and the name of the building is `PP Trade Centre`
+
+Flag: `ACECTF{pp_trade_centre}`

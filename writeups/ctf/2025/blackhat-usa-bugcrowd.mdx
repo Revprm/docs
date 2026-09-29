@@ -1,0 +1,81 @@
+---
+title: "Blackhat USA Bugcrowd"
+sidebarTitle: "Blackhat USA Bugcrowd"
+description: "CTF writeup for Blackhat USA Bugcrowd challenges including Wahlburger."
+---
+
+## Wahlburger
+
+### TL;DR
+
+We were given two SQLite files. One file is a database, and the other is a log file. There are several messages that have been archived based on the database. We can check these messages using the log file.
+
+### Solution
+
+The archive messages started from message id 2001 to 2100
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2FXgB0lxFTvoDFnQctjmBM%2Fimage.png?alt=media&token=cb28a0f1-3f1b-4280-a2b1-e96fc1eec69c)
+</Frame>
+
+<Frame>
+  ![](https://260992468-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2FeX7f2pvLxkrgE7gSlDCX%2Fuploads%2F9iYZxV4C7p5WjviHCEwG%2Fimage.png?alt=media&token=3a8a697b-25e2-418b-80c3-f157fd9cbb43)
+</Frame>
+
+From these, we can check the logs by finding the `wal` string to make it easier to find the messages.
+
+```text title="Strings users.db output"
+Qfh1WZoN2cfRWZ0F2YlJHclR2eHFETG9FVTVEV2025-08-02 03:37:28)
+wal_activity_992025-08-02 03:37:28(
++3hwal_activity_982025-08-02 03:37:28(
++30wal_activity_972025-08-02 03:37:28(
++3:wal_activity_962025-08-02 03:37:28(
++3 wal_activity_952025-08-02 03:37:28(
++3"wal_activity_942025-08-02 03:37:28(
++3-wal_activity_932025-08-02 03:37:28(
++3ewal_activity_922025-08-02 03:37:28(
++3Awal_activity_912025-08-02 03:37:28(
++3?wal_activity_902025-08-02 03:37:28)
+wal_activity_892025-08-02 03:37:28(
+wal_activity_882025-08-02 03:37:28(
++39wal_activity_872025-08-02 03:37:28(
++3Iwal_activity_862025-08-02 03:37:28)
+wal_activity_852025-08-02 03:37:28)
+wal_activity_842025-08-02 03:37:TS00:20250701120000
+AdpxWczt3RBxkR
+-08-02 03:37:28(
++3Lwal_activity_812025-08-02 03:37:28(
++32wal_activity_802025-08-02 03:37:28(
++3Awal_activity_792025-08-02 03:37:28(
++3Pwal_activity_782025-08-02 03:37:28(
+wal_activity_772025-08-02 03:37TS01:20250701120001
+QZy9mZfxWY39VZ
+5-08-02 03:37:28)
+wal_activity_742025-08-02 03:37:28)
+wal_activity_732025-08-02 03:37:28)
+wal_activity_722025-08-02 03:37:28)
+wal_activity_712025-08-02 03:37:28(
++3,wal_activity_702025-08-02 TS02:20250701120002
+0XZt92cldXYfNXafN3YpNnb
+8-02 03:37:28)
+wal_activity_672025-08-02 03:37:28)
+wal_activity_662025-08-02 03:37:28(
++3[wal_activity_652025-08-02 03:37:28)
+wal_activity_642025-08-02 03:37:28)
+wal_activity_632025-08-02 03:37:28(
++3iwal_activity_622025-08-02 03:37:28(
++3awal_activity_612025-08-02 03:37:28
+```
+
+From these messages we found a couple base64 encoded message in reverse order.
+
+```text
+Qfh1WZoN2cfRWZ0F2YlJHclR2eHFETG9FVTVEV -> TEST_FLAG{deprecated_schema}
+AdpxWczt3RBxkR -> FLAG{sqlit
+QZy9mZfxWY39VZ -> e_wal_fore
+0XZt92cldXYfNXafN3YpNnb -> nsics_is_awesome}
+```
+
+### Flag
+
+`FLAG\{sqlite_wal_forensics_is_awesome\}`
