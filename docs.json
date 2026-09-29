@@ -66,9 +66,8 @@
           {
             "group": "BTLO Challenges",
             "icon": "puzzle",
-            "pages": [
-              "btlo-challenges"
-            ]
+            "pages": [],
+            "root": "btlo-challenges"
           }
         ],
         "icon": "notes"
